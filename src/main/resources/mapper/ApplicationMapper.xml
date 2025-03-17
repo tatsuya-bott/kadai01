@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.japan.compass.annotation.repository.mapper.ApplicationMapper">
+
+    <select id="find" resultMap="ApplicationResult">
+        SELECT
+            name,
+            record_last_updated
+        FROM `application`
+        WHERE name = #{name}
+    </select>
+
+    <resultMap id="ApplicationResult" type="com.japan.compass.annotation.domain.entity.Application">
+        <id property="name" column="name"/>
+        <result property="recordLastUpdated" column="record_last_updated"/>
+    </resultMap>
+
+    <insert id="insert">
+        INSERT INTO `application`
+        (
+            name,
+            record_last_updated
+        )
+        VALUES
+        (
+            #{name},
+            #{application.recordLastUpdated}
+        )
+    </insert>
+
+    <update id="updateRecordLastUpdated">
+        UPDATE
+            `application`
+        SET
+            record_last_updated = #{time}
+        WHERE name = #{name}
+    </update>
+
+</mapper>

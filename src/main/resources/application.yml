@@ -9,7 +9,7 @@ spring:
   sql:
     init:
       schema-locations: classpath:/sql/schema.sql
-#      data-locations: classpath:/sql/data.sql
+      data-locations: classpath:/sql/data.sql
       mode: embedded
       encoding: UTF-8
   h2:

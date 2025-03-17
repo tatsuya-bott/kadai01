@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.japan.compass.annotation.repository.mapper.RecordMapper">
+    <select id="findAll" resultMap="RecordResult">
+        SELECT
+            id,
+            user_id,
+            project_id,
+            display_image_ids,
+            question_id,
+            answer_image_statuses,
+            answer_start_time,
+            answer_end_time,
+            created
+        FROM `record`
+        WHERE created BETWEEN #{start} AND #{end}
+        ORDER BY id
+    </select>
+
+    <resultMap id="RecordResult" type="com.japan.compass.annotation.domain.entity.Record">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="displayImageIds" column="display_image_ids"/>
+        <result property="questionId" column="question_id"/>
+        <result property="answerImageStatuses" column="answer_image_statuses"/>
+        <result property="answerStartTime" column="answer_start_time"/>
+        <result property="answerEndTime" column="answer_end_time"/>
+        <result property="created" column="created"/>
+    </resultMap>
+
+    <insert id="insert">
+        INSERT INTO `record`
+        (
+            user_id,
+            project_id,
+            display_image_ids,
+            question_id,
+            answer_image_statuses,
+            answer_start_time,
+            answer_end_time,
+            created
+        )
+        VALUES
+        (
+            #{userId},
+            #{projectId},
+            #{displayImageIds},
+            #{questionId},
+            #{answerImageStatuses},
+            #{answerStartTime},
+            #{answerEndTime},
+            #{created}
+        )
+    </insert>
+</mapper>

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.japan.compass.annotation.repository.mapper.ImageMapper">
+    <select id="count" resultType="integer">
+        SELECT
+            count(*)
+        FROM `image`
+    </select>
+
+    <select id="countByQuestionId" resultType="integer">
+        SELECT
+            count(*)
+        FROM `image`
+        WHERE question_id = #{questionId}
+    </select>
+
+    <select id="countMap" resultMap="countResult">
+        SELECT
+            question_id,
+            count(*) as count
+        FROM `image`
+        WHERE `image`.question_id IN
+        <foreach item="question_id" collection="questionIds" open="(" separator="," close=")">
+            #{question_id}
+        </foreach>
+            AND `image`.enabled = true
+        GROUP BY `image`.question_id
+    </select>
+
+    <resultMap id="countResult" type="com.japan.compass.annotation.repository.mapper.ImageMapper$ImageCount">
+        <result property="questionId" column="question_id" />
+        <result property="count" column="count" />
+    </resultMap>
+
+    <select id="findAllEnabledId" resultType="integer">
+        SELECT
+            id
+        FROM `image`
+        WHERE question_id = #{questionId}
+            AND enabled = true
+    </select>
+
+    <select id="find" resultMap="ImageResult">
+        SELECT
+            `image`.id as image_id,
+            `question`.id as question_id,
+            `question`.project_id as project_id,
+            `project`.name as project_name,
+            `project`.description as project_description,
+            `project`.type as project_type,
+            `project`.enabled as project_enabled,
+            `question`.text as question_text,
+            `question`.created as question_created,
+            `question`.enabled as question_enabled,
+            `image`.file_path as image_file_path,
+            `image`.created as image_created,
+            `image`.enabled as image_enabled
+        FROM `image`
+        INNER JOIN `question` ON `question`.id = `image`.question_id
+        INNER JOIN `project` ON `project`.id = `question`.project_id
+        WHERE `image`.id = #{id}
+    </select>
+
+    <select id="findEnabledByIds" resultMap="ImageResult">
+        SELECT
+            `image`.id as image_id,
+            `question`.id as question_id,
+            `question`.project_id as project_id,
+            `project`.name as project_name,
+            `project`.description as project_description,
+            `project`.type as project_type,
+            `project`.enabled as project_enabled,
+            `question`.text as question_text,
+            `question`.created as question_created,
+            `question`.enabled as question_enabled,
+            `image`.file_path as image_file_path,
+            `image`.created as image_created,
+            `image`.enabled as image_enabled
+        FROM `image`
+        INNER JOIN `question` ON `question`.id = `image`.question_id
+        INNER JOIN `project` ON `project`.id = `question`.project_id
+        WHERE `image`.enabled = true
+            AND `image`.id IN
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="findAll" resultMap="ImageResult">
+        SELECT
+            `image`.id as image_id,
+            `question`.id as question_id,
+            `question`.project_id as project_id,
+            `project`.name as project_name,
+            `project`.description as project_description,
+            `project`.type as project_type,
+            `project`.enabled as project_enabled,
+            `question`.text as question_text,
+            `question`.created as question_created,
+            `question`.enabled as question_enabled,
+            `image`.file_path as image_file_path,
+            `image`.created as image_created,
+            `image`.enabled as image_enabled
+        FROM `image`
+        INNER JOIN `question` ON `question`.id = `image`.question_id
+        INNER JOIN `project` ON `project`.id = `question`.project_id
+        ORDER BY `image`.id
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="findAllByQuestionId" resultMap="ImageResult">
+        SELECT
+            `image`.id as image_id,
+            `question`.id as question_id,
+            `question`.project_id as project_id,
+            `project`.name as project_name,
+            `project`.description as project_description,
+            `project`.type as project_type,
+            `project`.enabled as project_enabled,
+            `question`.text as question_text,
+            `question`.created as question_created,
+            `question`.enabled as question_enabled,
+            `image`.file_path as image_file_path,
+            `image`.created as image_created,
+            `image`.enabled as image_enabled
+        FROM `image`
+        INNER JOIN `question` ON `question`.id = `image`.question_id
+        INNER JOIN `project` ON `project`.id = `question`.project_id
+        WHERE `question`.id = #{questionId}
+        ORDER BY `image`.id
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <resultMap id="ImageResult" type="com.japan.compass.annotation.domain.entity.Image">
+        <id property="id" column="image_id"/>
+        <result property="filePath" column="image_file_path"/>
+        <result property="created" column="image_created"/>
+        <result property="enabled" column="image_enabled"/>
+        <association property="question" resultMap="QuestionResult"/>
+    </resultMap>
+
+    <resultMap id="QuestionResult" type="com.japan.compass.annotation.domain.entity.Question">
+        <id property="id" column="question_id"/>
+        <result property="text" column="question_text"/>
+        <result property="created" column="question_created"/>
+        <result property="enabled" column="question_enabled"/>
+        <association property="project" resultMap="ProjectResult"/>
+    </resultMap>
+
+    <resultMap id="ProjectResult" type="com.japan.compass.annotation.domain.entity.Project">
+        <id property="id" column="project_id"/>
+        <result property="name" column="project_name"/>
+        <result property="description" column="project_description"/>
+        <result property="type" column="project_type"/>
+        <result property="enabled" column="project_enabled"/>
+    </resultMap>
+
+    <insert id="insert">
+        INSERT INTO `image`
+        (
+            question_id,
+            file_path,
+            created,
+            enabled
+        )
+        VALUES
+        (
+            #{question.id},
+            #{filePath},
+            #{created},
+            #{enabled}
+        )
+    </insert>
+
+    <update id="updateEnabled">
+        UPDATE
+            `image`
+        SET
+            enabled = #{enabled}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM `image`
+        WHERE id = #{id}
+    </delete>
+</mapper>

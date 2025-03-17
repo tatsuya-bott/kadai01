@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.japan.compass.annotation.repository.mapper.QuestionMapper">
+    <select id="find" resultMap="QuestionResult">
+        SELECT
+            `question`.id as question_id,
+            `question`.project_id as project_id,
+            `project`.name as project_name,
+            `project`.description as project_description,
+            `project`.type as project_type,
+            `project`.enabled as project_enabled,
+            `question`.text as question_text,
+            `question`.created as question_created,
+            `question`.enabled as question_enabled
+        FROM `question`
+        INNER JOIN `project` ON `question`.project_id = `project`.id
+        WHERE `question`.id = #{id}
+    </select>
+
+    <select id="findAll" resultMap="QuestionResult">
+        SELECT
+            `question`.id as question_id,
+            `question`.project_id as project_id,
+            `project`.name as project_name,
+            `project`.description as project_description,
+            `project`.type as project_type,
+            `project`.enabled as project_enabled,
+            `question`.text as question_text,
+            `question`.created as question_created,
+            `question`.enabled as question_enabled
+        FROM `question`
+        INNER JOIN `project` ON `question`.project_id = `project`.id
+        ORDER BY `question`.id
+    </select>
+
+    <select id="findEnabledAllByProjectId" resultMap="QuestionResult">
+        SELECT
+            `question`.id as question_id,
+            `question`.project_id as project_id,
+            `project`.name as project_name,
+            `project`.description as project_description,
+            `project`.type as project_type,
+            `project`.enabled as project_enabled,
+            `question`.text as question_text,
+            `question`.created as question_created,
+            `question`.enabled as question_enabled
+        FROM `question`
+        INNER JOIN `project` ON `question`.project_id = `project`.id
+        WHERE `question`.enabled = true
+            AND `question`.project_id = #{id}
+        ORDER BY `question`.id
+    </select>
+
+    <resultMap id="QuestionResult" type="com.japan.compass.annotation.domain.entity.Question">
+        <id property="id" column="question_id"/>
+        <result property="text" column="question_text"/>
+        <result property="created" column="question_created"/>
+        <result property="enabled" column="question_enabled"/>
+        <association property="project" resultMap="ProjectResult"/>
+    </resultMap>
+
+    <resultMap id="ProjectResult" type="com.japan.compass.annotation.domain.entity.Project">
+        <id property="id" column="project_id"/>
+        <result property="name" column="project_name"/>
+        <result property="description" column="project_description"/>
+        <result property="type" column="project_type"/>
+        <result property="enabled" column="project_enabled"/>
+    </resultMap>
+
+    <insert id="insert">
+        INSERT INTO `question`
+        (
+            project_id,
+            text,
+            created,
+            enabled
+        )
+        VALUES
+        (
+            #{question.project.id},
+            #{question.text},
+            #{question.created},
+            #{question.enabled}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE
+            `question`
+        SET
+            text = #{question.text},
+            enabled = #{question.enabled}
+        WHERE
+            `question`.id = #{question.id}
+    </update>
+    
+    <update id="disable">
+        UPDATE
+            `question`
+        SET enabled = false
+        WHERE `question`.id = #{id}
+    </update>
+    
+    <delete id="delete">
+        DELETE
+        FROM `question`
+        WHERE `question`.id = #{id}
+    </delete>
+</mapper>
