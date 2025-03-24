@@ -32,9 +32,15 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     
-    //課題2：インメモリDBのH2とMyBatisをbuild.gradleの依存に追加
-    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
+     // Spring Boot Starter (必要に応じて追加)
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // H2 Database (インメモリDB)
     runtimeOnly 'com.h2database:h2'
+
+    // MyBatis Spring Boot Starter
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3' // バージョンは適宜最新を確認
+
 }
 
 tasks.named('test') {
