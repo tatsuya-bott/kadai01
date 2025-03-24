@@ -41,8 +41,6 @@ dependencies {
     // MyBatis Spring Boot Starter
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3' // バージョンは適宜最新を確認
 
-    // テスト関連（必要なら）
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 tasks.named('test') {

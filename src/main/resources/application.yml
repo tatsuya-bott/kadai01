@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:memdb;MODE=MySQL
+    username: user
+    password: password
+    hikari:
+      max-lifetime: 55000
+  sql:
+    init:
+      schema-locations: classpath:/sql/schema.sql
+#      data-locations: classpath:/sql/data.sql
+      mode: embedded
+      encoding: UTF-8
+  h2:
+    console:
+      path: /h2-console
+      enabled: true
